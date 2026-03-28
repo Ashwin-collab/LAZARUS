@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LAZARUS – Task Manager & Tracker</title>
+  <meta name="description" content="LAZARUS – Your personal task manager, timeline tracker, academic calendar, timer and relax hub." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="assets/logo.png" />
+</head>
+<body>
+
+  <!-- SVG Gradient Defs (for timer ring) -->
+  <svg style="position:absolute;width:0;height:0;overflow:hidden">
+    <defs>
+      <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#2563eb"/>
+        <stop offset="50%"  stop-color="#1d4ed8"/>
+        <stop offset="100%" stop-color="#000000"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Animated background -->
+  <div class="bg-orbs" id="bgOrbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="grid-overlay"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SIDEBAR
+       ═══════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo.png" alt="LAZARUS Logo" class="logo-img" />
+      <span class="logo-text">LAZARUS</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+        <span class="nav-icon">⚡</span><span class="nav-label">Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="calendar" id="nav-calendar">
+        <span class="nav-icon">📅</span><span class="nav-label">Calendar</span>
+      </a>
+      <a href="#" class="nav-item" data-page="timer" id="nav-timer">
+        <span class="nav-icon">⏱️</span><span class="nav-label">Timer</span>
+      </a>
+      <a href="#" class="nav-item" data-page="relax" id="nav-relax">
+        <span class="nav-icon">🌿</span><span class="nav-label">Relax</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-date" id="sidebarDate"></div>
+      <div class="sidebar-time" id="sidebarTime"></div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PAGE 1 ─ DASHBOARD
+       ═══════════════════════════════════════════════════════ -->
+  <main class="main-content page-section active" id="page-dashboard">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Task <span class="gradient-text">Dashboard</span></h1>
+        <p class="page-subtitle">Manage, track and conquer your goals</p>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-primary" id="addTaskBtn">+ Add Task</button>
+        <button class="btn-secondary" id="goCalendarBtn">📅 Calendar</button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="stats-row" aria-label="Task statistics">
+      <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-info"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Total Tasks</span></div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><span class="stat-num" id="statDone">0</span><span class="stat-label">Completed</span></div></div>
+      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-info"><span class="stat-num" id="statPending">0</span><span class="stat-label">In Progress</span></div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-info"><span class="stat-num" id="statOverdue">0</span><span class="stat-label">Overdue</span></div></div>
+    </section>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="pending">Pending</button>
+      <button class="filter-btn" data-filter="in-progress">In Progress</button>
+      <button class="filter-btn" data-filter="done">Done</button>
+      <button class="filter-btn" data-filter="overdue">Overdue</button>
+      <div class="filter-search"><input type="text" id="searchInput" placeholder="🔍 Search tasks…" /></div>
+    </div>
+
+    <!-- Tasks + Timeline -->
+    <div class="dash-grid">
+      <section class="task-section glass-card">
+        <h2 class="section-title">Tasks</h2>
+        <div class="task-list" id="taskList"></div>
+        <div class="empty-state" id="emptyState" style="display:none">
+          <div class="empty-icon">📭</div>
+          <p>No tasks yet. Click <strong>+ Add Task</strong> to get started!</p>
+        </div>
+      </section>
+      <section class="timeline-section glass-card">
+        <h2 class="section-title">Timeline</h2>
+        <div class="timeline" id="timeline"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PAGE 2 ─ CALENDAR
+       ═══════════════════════════════════════════════════════ -->
+  <main class="main-content page-section" id="page-calendar">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Academic <span class="gradient-text">Calendar</span></h1>
+        <p class="page-subtitle">KPR Institute – Even Semester 2025–2026</p>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-secondary" id="prevMonth">‹ Prev</button>
+        <span class="month-label" id="monthLabel"></span>
+        <button class="btn-secondary" id="nextMonth">Next ›</button>
+      </div>
+    </header>
+
+    <div class="cal-summary-strip glass-card">
+      <div class="summary-item"><span class="sum-icon">📅</span><span class="sum-num" id="sumWorkingDays">–</span><span class="sum-label">Working Days</span></div>
+      <div class="summary-item"><span class="sum-icon">🎉</span><span class="sum-num" id="sumHolidays">–</span><span class="sum-label">Holidays</span></div>
+      <div class="summary-item"><span class="sum-icon">🗓️</span><span class="sum-num" id="sumSundays">–</span><span class="sum-label">Sundays</span></div>
+      <div class="summary-item"><span class="sum-icon">📊</span><span class="sum-num" id="sumProgress">–%</span><span class="sum-label">Month Progress</span></div>
+    </div>
+
+    <div class="cal-layout">
+      <section class="cal-section glass-card">
+        <div class="cal-header">
+          <div class="cal-day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span class="leg-item"><span class="leg-dot ld-today"></span> Today</span>
+          <span class="leg-item"><span class="leg-dot ld-holiday"></span> Holiday</span>
+          <span class="leg-item"><span class="leg-dot ld-sunday"></span> Sunday</span>
+          <span class="leg-item"><span class="leg-dot ld-working"></span> Working Day</span>
+          <span class="leg-item"><span class="leg-dot ld-event"></span> Exam/Event</span>
+        </div>
+      </section>
+      <aside class="cal-aside">
+        <div class="cal-info-card glass-card">
+          <h3>🎉 Holidays This Month</h3>
+          <ul class="holiday-list" id="holidayList"></ul>
+        </div>
+        <div class="cal-info-card glass-card">
+          <h3>📌 Key Academic Events</h3>
+          <ul class="event-list" id="eventList"></ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PAGE 3 ─ TIMER
+       ═══════════════════════════════════════════════════════ -->
+  <main class="main-content page-section" id="page-timer">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Focus <span class="gradient-text">Timer</span></h1>
+        <p class="page-subtitle">Stay focused, stay productive</p>
+      </div>
+    </header>
+
+    <div class="timer-mode-tabs">
+      <button class="mode-tab active" data-mode="pomodoro">🍅 Pomodoro</button>
+      <button class="mode-tab" data-mode="countdown">⏬ Countdown</button>
+      <button class="mode-tab" data-mode="stopwatch">⏱ Stopwatch</button>
+    </div>
+
+    <div class="timer-center">
+      <div class="timer-ring-wrapper">
+        <svg class="timer-ring" viewBox="0 0 300 300">
+          <circle class="ring-bg" cx="150" cy="150" r="130" />
+          <circle class="ring-progress" cx="150" cy="150" r="130" id="ringProgress" stroke="url(#ringGrad)" />
+        </svg>
+        <div class="timer-display">
+          <div class="timer-mode-label" id="timerModeLabel">🍅 FOCUS</div>
+          <div class="timer-digits" id="timerDigits">25:00</div>
+          <div class="timer-session" id="timerSession">Session 1</div>
+        </div>
+      </div>
+
+      <div class="timer-controls">
+        <button class="timer-btn" id="timerReset" title="Reset">↺</button>
+        <button class="timer-btn timer-btn-main" id="timerStart">▶</button>
+        <button class="timer-btn" id="timerSkip" title="Skip">⏭</button>
+      </div>
+
+      <!-- Countdown input -->
+      <div class="countdown-input" id="countdownInput" style="display:none">
+        <div class="ci-row">
+          <div class="ci-field"><input type="number" id="cdHours" min="0" max="99" value="0" /><label>Hours</label></div>
+          <span class="ci-sep">:</span>
+          <div class="ci-field"><input type="number" id="cdMinutes" min="0" max="59" value="5" /><label>Minutes</label></div>
+          <span class="ci-sep">:</span>
+          <div class="ci-field"><input type="number" id="cdSeconds" min="0" max="59" value="0" /><label>Seconds</label></div>
+        </div>
+        <button class="btn-primary" id="setCountdownBtn">Set Timer</button>
+      </div>
+
+      <!-- Pomodoro settings -->
+      <div class="pomodoro-settings glass-card" id="pomodoroSettings">
+        <h3>⚙️ Pomodoro Settings</h3>
+        <div class="pomo-row"><label>Focus (min)</label><input type="range" id="focusDur" min="5" max="60" value="25" step="5" /><span id="focusDurVal">25</span></div>
+        <div class="pomo-row"><label>Short Break (min)</label><input type="range" id="shortBreak" min="1" max="15" value="5" step="1" /><span id="shortBreakVal">5</span></div>
+        <div class="pomo-row"><label>Long Break (min)</label><input type="range" id="longBreak" min="5" max="30" value="15" step="5" /><span id="longBreakVal">15</span></div>
+        <div class="pomo-row"><label>Sessions before long break</label><input type="range" id="sessionsCount" min="2" max="8" value="4" step="1" /><span id="sessionsCountVal">4</span></div>
+      </div>
+
+      <!-- Laps -->
+      <div class="laps-section glass-card" id="lapsSection" style="display:none">
+        <h3>🏁 Laps</h3>
+        <div class="laps-list" id="lapsList"></div>
+        <button class="btn-ghost" id="lapBtn">+ Record Lap</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PAGE 4 ─ RELAX
+       ═══════════════════════════════════════════════════════ -->
+  <main class="main-content page-section" id="page-relax">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Relax & <span class="gradient-text">Wellness</span></h1>
+        <p class="page-subtitle">Take a breath. You deserve it.</p>
+      </div>
+    </header>
+
+    <section class="relax-grid">
+      <div class="activity-card glass-card"><div class="activity-icon">🫁</div><h3>Deep Breathing</h3><p>4-7-8 breathing technique to reduce anxiety instantly</p><button class="btn-primary start-activity" data-activity="breathe">Start</button></div>
+      <div class="activity-card glass-card"><div class="activity-icon">👁️</div><h3>Eye Relaxation</h3><p>20-20-20 rule and palming to relieve eye strain</p><button class="btn-primary start-activity" data-activity="eye">Start</button></div>
+      <div class="activity-card glass-card"><div class="activity-icon">🧘</div><h3>Desk Stretches</h3><p>Quick stretches to release tension from long sessions</p><button class="btn-primary start-activity" data-activity="stretch">Start</button></div>
+      <div class="activity-card glass-card"><div class="activity-icon">🌸</div><h3>Mindfulness Pause</h3><p>5-4-3-2-1 grounding technique for sensory awareness</p><button class="btn-primary start-activity" data-activity="mindful">Start</button></div>
+      <div class="activity-card glass-card"><div class="activity-icon">💆</div><h3>Neck & Shoulder Roll</h3><p>Ease neck stiffness with guided movements</p><button class="btn-primary start-activity" data-activity="neck">Start</button></div>
+      <div class="activity-card glass-card"><div class="activity-icon">🎯</div><h3>Focus Reset</h3><p>Box breathing to re-center and sharpen concentration</p><button class="btn-primary start-activity" data-activity="focus">Start</button></div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODALS
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- Add/Edit Task Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal glass-card" id="taskModal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add New Task</h3>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <form id="taskForm">
+        <div class="form-group"><label for="taskName">Task Name</label><input type="text" id="taskName" placeholder="Enter task name…" required /></div>
+        <div class="form-group"><label for="taskDesc">Description</label><textarea id="taskDesc" placeholder="Brief description…" rows="3"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label for="taskDate">Due Date</label><input type="date" id="taskDate" required /></div>
+          <div class="form-group"><label for="taskPriority">Priority</label><select id="taskPriority"><option value="low">🟢 Low</option><option value="medium" selected>🟡 Medium</option><option value="high">🔴 High</option></select></div>
+        </div>
+        <div class="form-group"><label for="taskStatus">Status</label><select id="taskStatus"><option value="pending">⏳ Pending</option><option value="in-progress">🔄 In Progress</option><option value="done">✅ Done</option></select></div>
+        <div class="form-group"><label for="taskCategory">Category</label><input type="text" id="taskCategory" placeholder="e.g. Study, Project, Personal…" /></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn-primary" id="saveTaskBtn">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Relax Activity Modal -->
+  <div class="relax-overlay" id="relaxOverlay" style="display:none">
+    <div class="relax-modal glass-card" id="relaxModal">
+      <button class="modal-close" id="relaxClose">✕</button>
+      <div class="relax-header">
+        <div class="relax-icon-big" id="relaxIconBig"></div>
+        <h2 id="relaxTitle"></h2>
+        <p id="relaxSubtitle"></p>
+      </div>
+      <div class="relax-anim-area" id="relaxAnimArea">
+        <div class="breath-circle" id="breathCircle" style="display:none">
+          <div class="breath-ring"></div>
+          <div class="breath-text" id="breathText">Ready</div>
+        </div>
+        <div class="eye-exercise" id="eyeExercise" style="display:none">
+          <div class="eye-target" id="eyeTarget">👁️</div>
+        </div>
+        <div class="generic-anim" id="genericAnim" style="display:none">
+          <div class="pulse-dot"></div>
+        </div>
+      </div>
+      <div class="step-display">
+        <div class="step-progress-bar"><div class="step-progress-fill" id="stepFill"></div></div>
+        <div class="step-counter" id="stepCounter">Step 1 of 5</div>
+        <div class="step-instruction" id="stepInstruction"></div>
+        <div class="step-duration" id="stepDuration"></div>
+      </div>
+      <div class="relax-nav">
+        <button class="btn-ghost" id="prevStep" disabled>‹ Prev</button>
+        <button class="btn-primary" id="nextStep">Next ›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single unified JavaScript -->
+  <script src="js/app.js"></script>
+</body>
+</html>
