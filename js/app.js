@@ -97,11 +97,29 @@ function formatDate(d) {
   return new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
 }
 
-function renderTasks() {
+let isRenderingTasks = false;
+function renderTasks(simulateLoad = false) {
   const list = document.getElementById('taskList');
   const empty = document.getElementById('emptyState');
-  if (!list) return;
+  if (!list || isRenderingTasks) return;
+  
   const filtered = getFilteredTasks();
+  
+  if (simulateLoad) {
+    isRenderingTasks = true;
+    empty.style.display = 'none';
+    list.innerHTML = Array(Math.min(filtered.length || 3, 4))
+      .fill('<div class="skeleton skeleton-item"></div>').join('');
+    setTimeout(() => {
+      isRenderingTasks = false;
+      buildTaskDOM(list, empty, filtered);
+    }, 500);
+  } else {
+    buildTaskDOM(list, empty, filtered);
+  }
+}
+
+function buildTaskDOM(list, empty, filtered) {
   list.innerHTML = '';
   if (filtered.length === 0) {
     empty.style.display = 'flex';
@@ -130,8 +148,8 @@ function renderTasks() {
         </div>
       </div>
       <div class="task-actions">
-        <button class="task-action-btn edit-btn" data-id="${task.id}" title="Edit">✏️</button>
-        <button class="task-action-btn del-btn" data-id="${task.id}" title="Delete">🗑️</button>
+        <button class="task-action-btn edit-btn ripple-btn" data-id="${task.id}" title="Edit">✏️</button>
+        <button class="task-action-btn del-btn ripple-btn" data-id="${task.id}" title="Delete">🗑️</button>
       </div>`;
     list.appendChild(div);
   });
@@ -201,7 +219,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
-    renderTasks();
+    renderTasks(true); // Simulate load on filter change
   });
 });
 document.getElementById('searchInput')?.addEventListener('input', e => { searchQuery = e.target.value; renderTasks(); });
@@ -727,3 +745,74 @@ if (window.location.hash) {
     switchPage(page);
   }
 }
+
+// ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+// ⑦ ADVANCED INTERACTIONS (Scroll, Parallax, Tilt, Ripple)
+// ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+
+// -- Ripple Effect
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('.btn-primary, .btn-secondary, .nav-item, .task-action-btn, .mode-tab, .filter-btn');
+  if (!target) return;
+  const rect = target.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  
+  const ripple = document.createElement('span');
+  ripple.classList.add('ripple');
+  
+  const maxDim = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = maxDim + 'px';
+  ripple.style.left = x - maxDim/2 + 'px';
+  ripple.style.top = y - maxDim/2 + 'px';
+  
+  target.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
+
+// -- Scrollytelling Reveal
+const observerOpts = { root: null, rootMargin: '0px', threshold: 0.1 };
+const revealObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOpts);
+
+function initReveals() {
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}
+initReveals();
+
+// -- 3D Tilt & Parallax Background
+const bgOrbs = document.getElementById('bgOrbs');
+document.addEventListener('mousemove', (e) => {
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  
+  // Parallax ORBS
+  if (bgOrbs) {
+    const x = (window.innerWidth / 2 - e.pageX) / 40;
+    const y = (window.innerHeight / 2 - e.pageY) / 40;
+    bgOrbs.style.transform = `translate(${x}px, ${y}px)`;
+  }
+  
+  // 3D Tilt Cards
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const isHovering = (
+      e.clientX >= rect.left && e.clientX <= rect.right &&
+      e.clientY >= rect.top && e.clientY <= rect.bottom
+    );
+    if(isHovering) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -6;
+      const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 6;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    } else {
+      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+    }
+  });
+});

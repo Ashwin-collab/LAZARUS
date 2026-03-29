@@ -1134,14 +1134,15 @@ body {
    ============================================================ */
 .page-section {
   display: none;
+  opacity: 0;
 }
 .page-section.active {
   display: block;
-  animation: pageFadeIn 0.4s ease forwards;
+  animation: pageFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Relax mode orb colors via body class */
@@ -1181,5 +1182,114 @@ body {
    SVG GRADIENT DEFINITION
    ============================================================ */
 .svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ============================================================
+   ADVANCED INTERACTIVITY & VISUAL EFFECTS
+   ============================================================ */
+
+/* 1. Kinetic Typography */
+.kinetic-text {
+  background: linear-gradient(270deg, var(--sky), #000000, var(--blue), var(--sky-dark));
+  background-size: 800% 800%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: kineticFlow 8s ease infinite;
+  display: inline-block;
+}
+@keyframes kineticFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 2. Loading Skeletons */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.skeleton-item {
+  height: 80px;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius-sm);
+  background: rgba(241,245,249,0.5);
+}
+
+/* 3. Micro-interactions (Ripple & Thump) */
+.btn-primary, .btn-secondary, .nav-item, .task-action-btn, .mode-tab, .filter-btn {
+  position: relative;
+  overflow: hidden;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-anim 0.6s linear;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+.btn-secondary .ripple, .nav-item .ripple, .task-action-btn .ripple, .mode-tab .ripple, .filter-btn .ripple {
+  background-color: rgba(14, 165, 233, 0.2);
+}
+@keyframes ripple-anim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* 4. Glassmorphism Refinement */
+.glass-card {
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 5. Scrollytelling Revealer */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 6. 3D Tilt Card Base */
+.tilt-card {
+  transition: transform 0.1s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-card:hover {
+  z-index: 10;
+}
+
+/* 7. Accessibility (Reduced Motion) */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 

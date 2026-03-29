@@ -16,8 +16,8 @@
   <svg style="position:absolute;width:0;height:0;overflow:hidden">
     <defs>
       <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%"   stop-color="#2563eb"/>
-        <stop offset="50%"  stop-color="#1d4ed8"/>
+        <stop offset="0%"   stop-color="#0ea5e9"/>
+        <stop offset="50%"  stop-color="#0284c7"/>
         <stop offset="100%" stop-color="#000000"/>
       </linearGradient>
     </defs>
@@ -65,7 +65,7 @@
   <main class="main-content page-section active" id="page-dashboard">
     <header class="topbar">
       <div class="topbar-left">
-        <h1 class="page-title">Task <span class="gradient-text">Dashboard</span></h1>
+        <h1 class="page-title kinetic-text">Task <span>Dashboard</span></h1>
         <p class="page-subtitle">Manage, track and conquer your goals</p>
       </div>
       <div class="topbar-right">
@@ -75,11 +75,11 @@
     </header>
 
     <!-- Stats -->
-    <section class="stats-row" aria-label="Task statistics">
-      <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-info"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Total Tasks</span></div></div>
-      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><span class="stat-num" id="statDone">0</span><span class="stat-label">Completed</span></div></div>
-      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-info"><span class="stat-num" id="statPending">0</span><span class="stat-label">In Progress</span></div></div>
-      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-info"><span class="stat-num" id="statOverdue">0</span><span class="stat-label">Overdue</span></div></div>
+    <section class="stats-row reveal" aria-label="Task statistics">
+      <div class="stat-card tilt-card"><div class="stat-icon">📋</div><div class="stat-info"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Total Tasks</span></div></div>
+      <div class="stat-card tilt-card"><div class="stat-icon">✅</div><div class="stat-info"><span class="stat-num" id="statDone">0</span><span class="stat-label">Completed</span></div></div>
+      <div class="stat-card tilt-card"><div class="stat-icon">⏳</div><div class="stat-info"><span class="stat-num" id="statPending">0</span><span class="stat-label">In Progress</span></div></div>
+      <div class="stat-card tilt-card"><div class="stat-icon">🔥</div><div class="stat-info"><span class="stat-num" id="statOverdue">0</span><span class="stat-label">Overdue</span></div></div>
     </section>
 
     <!-- Filters -->
@@ -94,7 +94,7 @@
 
     <!-- Tasks + Timeline -->
     <div class="dash-grid">
-      <section class="task-section glass-card">
+      <section class="task-section glass-card reveal">
         <h2 class="section-title">Tasks</h2>
         <div class="task-list" id="taskList"></div>
         <div class="empty-state" id="emptyState" style="display:none">
@@ -102,7 +102,7 @@
           <p>No tasks yet. Click <strong>+ Add Task</strong> to get started!</p>
         </div>
       </section>
-      <section class="timeline-section glass-card">
+      <section class="timeline-section glass-card reveal">
         <h2 class="section-title">Timeline</h2>
         <div class="timeline" id="timeline"></div>
       </section>
@@ -115,7 +115,7 @@
   <main class="main-content page-section" id="page-calendar">
     <header class="topbar">
       <div class="topbar-left">
-        <h1 class="page-title">Academic <span class="gradient-text">Calendar</span></h1>
+        <h1 class="page-title kinetic-text">Academic <span>Calendar</span></h1>
         <p class="page-subtitle">KPR Institute – Even Semester 2025–2026</p>
       </div>
       <div class="topbar-right">
@@ -125,7 +125,7 @@
       </div>
     </header>
 
-    <div class="cal-summary-strip glass-card">
+    <div class="cal-summary-strip glass-card reveal">
       <div class="summary-item"><span class="sum-icon">📅</span><span class="sum-num" id="sumWorkingDays">–</span><span class="sum-label">Working Days</span></div>
       <div class="summary-item"><span class="sum-icon">🎉</span><span class="sum-num" id="sumHolidays">–</span><span class="sum-label">Holidays</span></div>
       <div class="summary-item"><span class="sum-icon">🗓️</span><span class="sum-num" id="sumSundays">–</span><span class="sum-label">Sundays</span></div>
@@ -133,7 +133,7 @@
     </div>
 
     <div class="cal-layout">
-      <section class="cal-section glass-card">
+      <section class="cal-section glass-card reveal">
         <div class="cal-header">
           <div class="cal-day-names"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
         </div>
@@ -147,11 +147,11 @@
         </div>
       </section>
       <aside class="cal-aside">
-        <div class="cal-info-card glass-card">
+        <div class="cal-info-card glass-card reveal tilt-card">
           <h3>🎉 Holidays This Month</h3>
           <ul class="holiday-list" id="holidayList"></ul>
         </div>
-        <div class="cal-info-card glass-card">
+        <div class="cal-info-card glass-card reveal tilt-card">
           <h3>📌 Key Academic Events</h3>
           <ul class="event-list" id="eventList"></ul>
         </div>
@@ -165,7 +165,7 @@
   <main class="main-content page-section" id="page-timer">
     <header class="topbar">
       <div class="topbar-left">
-        <h1 class="page-title">Focus <span class="gradient-text">Timer</span></h1>
+        <h1 class="page-title kinetic-text">Focus <span>Timer</span></h1>
         <p class="page-subtitle">Stay focused, stay productive</p>
       </div>
     </header>
@@ -176,7 +176,7 @@
       <button class="mode-tab" data-mode="stopwatch">⏱ Stopwatch</button>
     </div>
 
-    <div class="timer-center">
+    <div class="timer-center reveal">
       <div class="timer-ring-wrapper">
         <svg class="timer-ring" viewBox="0 0 300 300">
           <circle class="ring-bg" cx="150" cy="150" r="130" />
@@ -231,18 +231,18 @@
   <main class="main-content page-section" id="page-relax">
     <header class="topbar">
       <div class="topbar-left">
-        <h1 class="page-title">Relax & <span class="gradient-text">Wellness</span></h1>
+        <h1 class="page-title kinetic-text">Relax & <span>Wellness</span></h1>
         <p class="page-subtitle">Take a breath. You deserve it.</p>
       </div>
     </header>
 
-    <section class="relax-grid">
-      <div class="activity-card glass-card"><div class="activity-icon">🫁</div><h3>Deep Breathing</h3><p>4-7-8 breathing technique to reduce anxiety instantly</p><button class="btn-primary start-activity" data-activity="breathe">Start</button></div>
-      <div class="activity-card glass-card"><div class="activity-icon">👁️</div><h3>Eye Relaxation</h3><p>20-20-20 rule and palming to relieve eye strain</p><button class="btn-primary start-activity" data-activity="eye">Start</button></div>
-      <div class="activity-card glass-card"><div class="activity-icon">🧘</div><h3>Desk Stretches</h3><p>Quick stretches to release tension from long sessions</p><button class="btn-primary start-activity" data-activity="stretch">Start</button></div>
-      <div class="activity-card glass-card"><div class="activity-icon">🌸</div><h3>Mindfulness Pause</h3><p>5-4-3-2-1 grounding technique for sensory awareness</p><button class="btn-primary start-activity" data-activity="mindful">Start</button></div>
-      <div class="activity-card glass-card"><div class="activity-icon">💆</div><h3>Neck & Shoulder Roll</h3><p>Ease neck stiffness with guided movements</p><button class="btn-primary start-activity" data-activity="neck">Start</button></div>
-      <div class="activity-card glass-card"><div class="activity-icon">🎯</div><h3>Focus Reset</h3><p>Box breathing to re-center and sharpen concentration</p><button class="btn-primary start-activity" data-activity="focus">Start</button></div>
+    <section class="relax-grid reveal">
+      <div class="activity-card glass-card tilt-card"><div class="activity-icon">🫁</div><h3>Deep Breathing</h3><p>4-7-8 breathing technique to reduce anxiety instantly</p><button class="btn-primary start-activity" data-activity="breathe">Start</button></div>
+      <div class="activity-card glass-card tilt-card"><div class="activity-icon">👁️</div><h3>Eye Relaxation</h3><p>20-20-20 rule and palming to relieve eye strain</p><button class="btn-primary start-activity" data-activity="eye">Start</button></div>
+      <div class="activity-card glass-card tilt-card"><div class="activity-icon">🧘</div><h3>Desk Stretches</h3><p>Quick stretches to release tension from long sessions</p><button class="btn-primary start-activity" data-activity="stretch">Start</button></div>
+      <div class="activity-card glass-card tilt-card"><div class="activity-icon">🌸</div><h3>Mindfulness Pause</h3><p>5-4-3-2-1 grounding technique for sensory awareness</p><button class="btn-primary start-activity" data-activity="mindful">Start</button></div>
+      <div class="activity-card glass-card tilt-card"><div class="activity-icon">💆</div><h3>Neck & Shoulder Roll</h3><p>Ease neck stiffness with guided movements</p><button class="btn-primary start-activity" data-activity="neck">Start</button></div>
+      <div class="activity-card glass-card tilt-card"><div class="activity-icon">🎯</div><h3>Focus Reset</h3><p>Box breathing to re-center and sharpen concentration</p><button class="btn-primary start-activity" data-activity="focus">Start</button></div>
     </section>
   </main>
 
